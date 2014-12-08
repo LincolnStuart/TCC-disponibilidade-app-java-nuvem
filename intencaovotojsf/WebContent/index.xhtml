@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Intenção de Voto</title>
+	<script
+		src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<link href="css/bootstrap.min.css" rel="stylesheet" />
+	<script src="js/bootstrap.min.js"></script>
+	<link href="css/estilo.min.css" rel="stylesheet" />
+</h:head>
+<h:body>
+	<div class="container bs-docs-container">
+		<h1 id="glyphicons" class="page-header">Pesquisa de Intenção de
+			Voto</h1>
+		<h:form>
+			<h:panelGroup id="info-head">
+				<script type="text/javascript">			
+					if(localStorage.getItem("tbFichas") != null){
+						if(#{indexMB.cloudStatus}){
+							PersistirNaNuvem();
+						}
+					}
+				</script>
+				<h:panelGroup id="maneira" rendered="#{!indexMB.cloudStatus}">
+					<div class="bs-callout bs-callout-warning">
+						<span class="glyphicon glyphicon-warning-sign"
+							style="color: rgb(240, 173, 78); float: left"></span>
+						<h4>
+							<h:outputText value="Trabalhando Offline"></h:outputText>
+						</h4>
+						<p>Não é possível se conectar com a base de dados,
+							armazenaremos seu trabalho offline. quando a conexão for
+							reestabelecida, enviaremos para o banco de dados.</p>
+					</div>
+				</h:panelGroup>
+			</h:panelGroup>
+
+			<h:panelGroup id="msgs">
+				<div class="bs-callout bs-callout-danger">
+					<h:link id="close-msgs"
+						onclick="$('span[id*=msgs]').hide(); return true;" type="button">
+						<span class="glyphicon glyphicon-remove"
+							style="color: rgb(198, 54, 54); float: right" />
+					</h:link>
+					<span class="glyphicon glyphicon-comment"
+						style="color: rgb(198, 54, 54); float: left"></span>
+					<h4>
+						<h:outputText value="Mensagens"></h:outputText>
+					</h4>
+					<h:messages id="mensagensGlobais" />
+				</div>
+			</h:panelGroup>
+
+			<!-- Formulario -->
+			<h:panelGrid columns="2">
+				<h:outputLabel value="Nome: " for="txtNome"></h:outputLabel>
+				<h:inputText id="txtNome" value="#{indexMB.ficha.nome}"
+					required="true" requiredMessage="O campo 'Nome' é obrigatório" />
+
+				<h:outputLabel value="Sexo: " for="rbtSexo"></h:outputLabel>
+				<h:selectOneRadio id="rbtSexo" value="#{indexMB.ficha.sexo}"
+					required="true" requiredMessage="O campo 'Sexo' é obrigatório">
+					<f:selectItem itemLabel="Masculino" itemValue="M" />
+					<f:selectItem itemLabel="Feminino" itemValue="F" />
+				</h:selectOneRadio>
+
+				<h:outputLabel value="Data de nascimento: " for="txtNascimento"></h:outputLabel>
+				<h:inputText id="txtNascimento" value="#{indexMB.ficha.nascimento}"
+					required="true"
+					requiredMessage="O campo 'Data de nascimento' é obrigatório">
+					<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+				</h:inputText>
+
+				<h:outputLabel value="Desempregado: " for="rbtDesempregado"></h:outputLabel>
+				<h:selectOneRadio id="rbtDesempregado"
+					value="#{indexMB.ficha.empregado}" required="true"
+					requiredMessage="O campo 'Desempregado' é obrigatório">
+					<f:selectItem itemLabel="Não" itemValue="1" />
+					<f:selectItem itemLabel="Sim" itemValue="0" />
+				</h:selectOneRadio>
+
+				<h:outputLabel value="Renda: " for="txtRenda"></h:outputLabel>
+				<h:inputText id="txtRenda" value="#{indexMB.ficha.renda}"
+					required="true" requiredMessage="O campo 'Renda' é obrigatório" />
+
+				<h:outputLabel value="Grau de escolaridade: " for="rbtEscolaridade"></h:outputLabel>
+				<h:selectOneMenu id="rbtEscolaridade" required="true"
+					requiredMessage="O campo 'Grau de escolaridade' é obrigatório"
+					value="#{indexMB.ficha.grauEscolaridade}" layout="pageDirection">
+					<f:selectItem itemLabel="Nenhum" itemValue="N" />
+					<f:selectItem itemLabel="Ensino Fundamental Incompleto"
+						itemValue="FI" />
+					<f:selectItem itemLabel="Ensino Fundamental Completo"
+						itemValue="FC" />
+					<f:selectItem itemLabel="Ensino Médio Incompleto" itemValue="MI" />
+					<f:selectItem itemLabel="Ensino Médio Completo" itemValue="MC" />
+					<f:selectItem itemLabel="Ensino Superior Incompleto" itemValue="SI" />
+					<f:selectItem itemLabel="Ensino Superior Completo" itemValue="SC" />
+					<f:selectItem itemLabel="Acima do Nível Superior Completo"
+						itemValue="O" />
+				</h:selectOneMenu>
+
+				<h:outputLabel value="Candidato: " for="rbtCandidato"></h:outputLabel>
+				<h:selectOneRadio id="rbtCandidato" required="true"
+					requiredMessage="O campo 'Candidato' é obrigatório"
+					value="#{indexMB.ficha.candidato}" layout="pageDirection">
+					<f:selectItem itemLabel="Candidato 1" itemValue="13" />
+					<f:selectItem itemLabel="Candidato 2" itemValue="40" />
+					<f:selectItem itemLabel="Candidato 3" itemValue="45" />
+					<f:selectItem itemLabel="Candidato 4" itemValue="43" />
+					<f:selectItem itemLabel="Candidato 5" itemValue="50" />
+					<f:selectItem itemLabel="Branco/Nulo" itemValue="0" />
+					<f:selectItem itemLabel="Indeciso" itemValue="-1" />
+				</h:selectOneRadio>
+			</h:panelGrid>
+			<h:panelGroup id="botoes">
+				<h:commandButton value="Salvar" styleClass="btn btn-info navbar-btn"
+					actionListener="#{indexMB.salvarFicha}"
+					rendered="#{indexMB.cloudStatus}" />
+
+				<h:commandButton value="Salvar Offline"
+					styleClass="btn btn-warning navbar-btn" type="button"
+					rendered="#{!indexMB.cloudStatus}" onclick="AdicionarNoStorage()" />
+			</h:panelGroup>
+
+			<p:poll interval="3" update="info-head botoes"></p:poll>
+
+		</h:form>
+		<script type="text/javascript">
+
+			</script>
+		<!-- Form exclusivo para persistir dados salvos no browser -->
+		<h:form>
+			<h:panelGroup id="estatistica">
+				<h:inputHidden id="hdnNome" value="#{indexMB.fichaBrowser.nome}" />
+				<h:inputHidden id="hdnSexo" value="#{indexMB.fichaBrowser.sexo}" />
+				<h:inputHidden id="hdnNascimento"
+					value="#{indexMB.fichaBrowser.nascimento}">
+					<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+				</h:inputHidden>
+				<h:inputHidden id="hdnDesempregado"
+					value="#{indexMB.fichaBrowser.empregado}" />
+				<h:inputHidden id="hdnRenda" value="#{indexMB.fichaBrowser.renda}" />
+				<h:inputHidden id="hdnEscolaridade"
+					value="#{indexMB.fichaBrowser.grauEscolaridade}" />
+				<h:inputHidden id="hdnCandidato"
+					value="#{indexMB.fichaBrowser.candidato}" />
+				<h:commandButton style="visibility: hidden;"
+					id="persistirDadosNuvem" value="..."
+					action="#{indexMB.salvarFichaBrowser}">
+					<f:ajax execute="estatistica" render="@this"></f:ajax>
+				</h:commandButton>
+			</h:panelGroup>
+			
+		<div id="barra-panel" style="visibility: hidden;">
+				Salvando as fichas armazenadas localmente, na nuvem...
+		
+		<div id="barra-progresso" style="width: 0; background: #2ecc71"></div>
+			</div>
+		</h:form>
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			if($('ul[id*=mensagensGlobais]').size() == 0){
+				$('span[id*=msgs]').hide();
+			} else {
+				$('span[id*=msgs]').show();
+			}
+		});
+		
+		//Função para adicionar no storage
+		function AdicionarNoStorage(){ 
+			var tbFichas = localStorage.getItem("tbFichas");// Recupera os dados armazenados
+			tbFichas = JSON.parse(tbFichas); // Converte string para objeto
+			if(tbFichas == null) // Caso não haja conteúdo, iniciamos um vetor vazio 
+				tbFichas = [];
+			var ficha = JSON.stringify({ 
+					Nome : $('input[id*=txtNome]').val(),
+					Sexo: $('input[id*=rbtSexo]').val(),
+					Nascimento: $('input[id*=txtNascimento]').val(),
+					Desempregado: $('input[id*=rbtDesempregado]').val(),
+					Renda: $('input[id*=txtRenda]').val(),
+					Escolaridade: $('select[id*=rbtEscolaridade]').val(),
+					Candidato: $('input[id*=rbtCandidato]').val()
+					 }); 
+			tbFichas.push(ficha);
+			localStorage.setItem("tbFichas", JSON.stringify(tbFichas));
+			alert("Salvo no storage do browser com sucesso!"); 
+			return true; 
+		}
+		
+		//funcao para persistir os dados do browser na nuvem
+		function PersistirNaNuvem(){
+			var tbFichas =  JSON.parse(localStorage.getItem("tbFichas"));
+			var tbFichasAux =  JSON.parse(localStorage.getItem("tbFichas"));
+			var cont = 0;
+			$('div[id*=barra-panel]').css('visibility','visible').hide().fadeIn('slow');
+			for(var i in tbFichas){
+				var cli = JSON.parse(tbFichas[i]);
+				$('input[id*=hdnNome]').val(cli.Nome);	
+				$('input[id*=hdnSexo]').val(cli.Sexo);
+				$('input[id*=hdnNascimento]').val(cli.Nascimento);
+				$('input[id*=hdnDesempregado]').val(cli.Desempregado);
+				$('input[id*=hdnRenda]').val(cli.Renda);
+				$('input[id*=hdnEscolaridade]').val(cli.Escolaridade);
+				$('input[id*=hdnCandidato]').val(cli.Candidato);
+				$('input[id*=persistirDadosNuvem]').click();
+				delete tbFichasAux[i];
+				cont = cont + 1;
+				var perc = (cont*100)/tbFichas.length;
+				$("div[id*=barra-progresso]").animate( {width: perc + "%", background: "#2ecc71", height: "10px"}, 2000 );
+			}
+			if($('div[id*=barra-progresso]').width(1140)){
+				setTimeout(function() {
+				   localStorage.clear();
+				   $('div[id*=barra-panel]').fadeOut('slow');
+				}, 2050*cont);
+			} else {
+				localStorage.setItem("tbFichas", tbFichasAux);
+			}
+		}
+	</script>
+
+</h:body>
+
+</html>
